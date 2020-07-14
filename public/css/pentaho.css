@@ -1,0 +1,121 @@
+/*.style-1 {*/
+
+/*}*/
+/*.style-2 {*/
+
+/*}*/
+/*.style-3 {*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+
+/*}*/
+/*.style-4 {*/
+/*  color: black;*/
+/*  font-size: 12pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: bold;*/
+/*  font-style: normal;*/
+/*  text-align: left;*/
+/*}*/
+/*.style-5 {*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: left;*/
+/*}*/
+/*.style-6 {*/
+
+/*}*/
+/*.style-7 {*/
+
+/*}*/
+/*.style-8 {*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+/*  border-bottom: 1pt solid black;*/
+/*}*/
+/*.style-9 {*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+/*  border-bottom: 1pt solid black;*/
+
+/*}*/
+/*.style-10 {*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+/*  word-spacing: 0pt;*/
+/*  letter-spacing: 0pt;*/
+/*  white-space: pre-wrap;*/
+/*  text-decoration: none;*/
+/*  border-bottom: 1pt solid black;*/
+
+/*}*/
+/*.style-11 {*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+
+/*}*/
+/*.style-12 {*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+
+/*}*/
+
+/*.style-13{*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+/*}*/
+
+/*.style-14{*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+/*}*/
+/*.style-15{*/
+/*  color: black;*/
+/*  font-size: 10pt;*/
+/*  font-family: Tahoma;*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  text-align: center;*/
+/*}*/
+td {
+  padding: 0;
+  font-size: 1pt;
+}
+table, th, td{
+  padding: 5px;
+}

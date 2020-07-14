@@ -1,0 +1,82 @@
+<template>
+  <li  :class="{'is-active':isDropdownActive}">
+    <component :is="componentIs" :to="itemTo" :href="itemHref" @click="menuClick" exact-active-class="is-active" :class="{'has-icon':!!item.icon, 'has-dropdown-icon':hasDropdown}">
+      <b-icon v-if="item.icon" :icon="item.icon" :class="{ 'has-update-mark' : item.updateMark }" custom-size="default"  />
+      <span v-if="item.label" :class="{'menu-item-label':!!item.icon}">{{ item.label }}</span>
+<!--      <span v-if="item.label" :class="{'menu-item-label':!!label.icon}"> {{ item.label }}</span>-->
+      <div v-if="hasDropdown" class="dropdown-icon">
+        <b-icon :icon="dropdownIcon" custom-size="default"/>
+      </div>
+    </component>
+    <aside-menu-list
+      v-if="hasDropdown"
+      :menu="item.menu"
+      :isSubmenuList="true"/>
+  </li>
+</template>
+
+<script>
+export default {
+  name: 'AsideMenuItem',
+  data () {
+    return {
+      isDropdownActive: false,
+      forms: [],
+    }
+  },
+  props: {
+    item: {
+      type: Object,
+      default: null
+    }
+  },
+  created() {
+    this.getForms();
+  },
+  methods: {
+    menuClick () {
+      this.$emit('menu-click', this.item)
+
+      if (this.hasDropdown) {
+        this.isDropdownActive = (!this.isDropdownActive)
+      }
+    },
+    getForms() {
+      this.isLoading = true;
+      axios
+        .get("/reports/forms")
+        .then(r => {
+          this.isLoading = false;
+          if (r.data && r.data.data) {
+            this.forms = r.data.data;
+          }
+        })
+        .catch(err => {
+          this.isLoading = false;
+          this.$buefy.toast.open({
+            message: `Error: ${err.message}`,
+            type: "is-danger",
+            queue: false
+          });
+        });
+    }
+  },
+  computed: {
+    componentIs () {
+      return this.item.to ? 'router-link' : 'a'
+    },
+    hasDropdown () {
+      return !!this.item.menu
+    },
+    dropdownIcon () {
+      return (this.isDropdownActive) ? 'menu-down' : 'menu-up'
+    },
+    itemTo () {
+      return this.item.to ? this.item.to : null
+    },
+    itemHref () {
+      return this.item.href ? this.item.href : null
+    }
+  }
+}
+</script>
