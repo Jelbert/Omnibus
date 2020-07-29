@@ -157,6 +157,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -182,7 +186,13 @@ __webpack_require__.r(__webpack_exports__);
       isLoading: false,
       paginated: false,
       perPage: 10,
-      checkedRows: []
+      checkedRows: [],
+      checkUserID: [],
+      checkUserAccess: [],
+      onIndex: false,
+      onCreate: false,
+      onEdit: false,
+      onDelete: false
     };
   },
   computed: {
@@ -200,26 +210,73 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.getData();
+    this.getUserAccess();
+    this.getUser();
   },
   methods: {
-    getData: function getData() {
+    getUserAccess: function getUserAccess() {
       var _this = this;
+
+      axios.get("/access").then(function (r) {
+        if (r.data && r.data.data) {
+          _this.checkUserAccess = r.data.data;
+          var i; // let route;
+
+          for (i = 0; i < _this.checkUserAccess.length; i++) {
+            if (_this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@index') {
+              _this.onIndex = 'true';
+              console.log('INDEX');
+            } else if (_this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@store') {
+              _this.onCreate = 'true';
+              console.log('STORE');
+            } else if (_this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@update') {
+              _this.onEdit = 'true';
+              console.log('UPDATE');
+            } else if (_this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@destroy') {
+              _this.onDelete = 'true';
+              console.log('DESTROY');
+            }
+          }
+        }
+      })["catch"](function (err) {
+        _this.$buefy.toast.open({
+          message: "Error: ".concat(err.message),
+          type: "is-danger"
+        });
+      });
+    },
+    getUser: function getUser() {
+      var _this2 = this;
+
+      axios.get("/user").then(function (r) {
+        if (r.data && r.data.data) {
+          _this2.checkUserID = r.data.data; // console.log(this.checkUserID['role_id']);
+        }
+      })["catch"](function (err) {
+        _this2.$buefy.toast.open({
+          message: "Error: ".concat(err.message),
+          type: "is-danger"
+        });
+      });
+    },
+    getData: function getData() {
+      var _this3 = this;
 
       this.isLoading = true;
       axios.get("/reports/forms").then(function (r) {
-        _this.isLoading = false;
+        _this3.isLoading = false;
 
         if (r.data && r.data.data) {
-          if (r.data.data.length > _this.perPage) {
-            _this.paginated = true;
+          if (r.data.data.length > _this3.perPage) {
+            _this3.paginated = true;
           }
 
-          _this.forms = r.data.data;
+          _this3.forms = r.data.data;
         }
       })["catch"](function (err) {
-        _this.isLoading = false;
+        _this3.isLoading = false;
 
-        _this.$buefy.toast.open({
+        _this3.$buefy.toast.open({
           message: "Error: ".concat(err.message),
           type: "is-danger",
           queue: false
@@ -235,7 +292,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     trashConfirm: function trashConfirm() {
-      var _this2 = this;
+      var _this4 = this;
 
       var url;
       var method;
@@ -260,17 +317,17 @@ __webpack_require__.r(__webpack_exports__);
         url: url,
         data: data
       }).then(function (r) {
-        _this2.getData();
+        _this4.getData();
 
-        _this2.trashObject = null;
-        _this2.checkedRows = [];
+        _this4.trashObject = null;
+        _this4.checkedRows = [];
 
-        _this2.$buefy.snackbar.open({
+        _this4.$buefy.snackbar.open({
           message: "Deleted",
           queue: false
         });
       })["catch"](function (err) {
-        _this2.$buefy.toast.open({
+        _this4.$buefy.toast.open({
           message: "Error: ".concat(err.message),
           type: "is-danger",
           queue: false
@@ -441,12 +498,17 @@ var render = function() {
       _c(
         "hero-bar",
         [
-          _vm._v("\n    Manage Forms\n    "),
+          _vm._v("\n    Manage Forms\n\n    "),
           _c(
             "router-link",
             {
               staticClass: "button",
-              attrs: { slot: "right", to: "/reports/forms/new" },
+              attrs: {
+                slot: "right",
+                tag: "button",
+                disabled: _vm.onCreate !== "true",
+                to: "/reports/forms/new"
+              },
               slot: "right"
             },
             [_vm._v("New Form")]
@@ -475,7 +537,8 @@ var render = function() {
                     attrs: {
                       slot: "right",
                       type: "button",
-                      disabled: !_vm.checkedRows.length
+                      disabled:
+                        !_vm.checkedRows.length || _vm.onDelete !== "true"
                     },
                     on: {
                       click: function($event) {
@@ -588,6 +651,8 @@ var render = function() {
                                     {
                                       staticClass: "button is-small is-primary",
                                       attrs: {
+                                        tag: "button",
+                                        disabled: _vm.onEdit !== "true",
                                         to: {
                                           name: "reports.forms.edit",
                                           params: { id: props.row.id }
@@ -609,7 +674,10 @@ var render = function() {
                                     "button",
                                     {
                                       staticClass: "button is-small is-danger",
-                                      attrs: { type: "button" },
+                                      attrs: {
+                                        type: "button",
+                                        disabled: _vm.onDelete !== "true"
+                                      },
                                       on: {
                                         click: function($event) {
                                           $event.preventDefault()

@@ -25,10 +25,13 @@ export default {
   data() {
     return {
       forms: [],
+      modules: [],
+      modulespath: [],
     }
   },
   created() {
-    this.getForms();
+    this.getModules();
+    // this.getModulespath();
     axios
       .get("/user")
       .then(r => {
@@ -42,15 +45,16 @@ export default {
       });
   },
   methods: {
-    getForms() {
-      this.isLoading = true;
+    getModules() {
+      // this.isLoading = true;
       axios
-        .get("/reports/forms")
+        .get("modules")
         .then(r => {
-          this.isLoading = false;
-          if (r.data && r.data.data) {
-            this.forms = r.data.data;
-          }
+          // this.isLoading = false;
+          // if (r.data && r.data.data) {
+            this.modules = r.data.data;
+            // console.log(this.modules)
+          // }
         })
         .catch(err => {
           this.isLoading = false;
@@ -61,36 +65,56 @@ export default {
           });
         });
     },
+
+    getModulespath() {
+      // this.isLoading = true;
+      axios
+        .get("getmodulepath")
+        .then(r => {
+          // this.isLoading = false;
+          // if (r.data && r.data.data) {
+          this.modules = r.data.data;
+          // console.log(this.modules)
+          // }
+        })
+        .catch(err => {
+          this.isLoading = false;
+          this.$buefy.toast.open({
+            message: `Error: ${err.message}`,
+            type: "is-danger",
+            queue: false
+          });
+        });
+    },
+
   },
   computed: {
     menu() {
-      return [
-        // this.forms
-        "General",
-        [
-          {
-            to: "/",
-            icon: "view-dashboard",
-            label: "Browse Reports"
-          },
-        ],
-        "Admin",
-        [
-          {
-            to: "/reports/forms/index",
-            label: "Forms",
-            icon: "database"
-          },
-          {
-            to: "/reports/role/index",
-            label: "Roles",
-            icon: "database"
-          },
-
-        ]
-      ];
+      return this.modules
+      // return [
+      //   'General',
+      //   [
+      //     {
+      //       to: '/',
+      //       icon: 'desktop-mac',
+      //       label: 'Dashboard'
+      //     },
+      //     {
+      //       label: 'Submenus',
+      //       subLabel: 'Submenus Example',
+      //       icon: 'view-list',
+      //       menu: [
+      //         {
+      //           label: 'Submenus 2',
+      //           menu2: [
+      //             { label2: "Item" }
+      //             ]
+      //         }
+      //       ]
+      //     },
+      //   ],
+      // ]
     }
   },
-
 };
 </script>

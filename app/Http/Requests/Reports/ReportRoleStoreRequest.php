@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Requests\Reports;
 
+use App\RoleRoute;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ReportRoleStoreRequest extends FormRequest

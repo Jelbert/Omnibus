@@ -14,6 +14,7 @@
           icon="account-edit"
           class="tile is-child"
         >
+
           <form @submit.prevent="submit">
             <template v-if="id">
               <b-field label="ID" horizontal>
@@ -22,12 +23,90 @@
               <hr />
             </template>
             <b-field label="Name" horizontal>
-              <b-input v-model="role.title" required />
+              <b-input v-model="role.name" required />
             </b-field>
             <hr />
-            <b-field label="Operation" horizontal>
-              <b-input v-model="role.operation" required />
+
+<!--            <strong>{{ roleroute['label'] }}</strong>-->
+
+<!--            <b-field-->
+<!--              v-for="(field, i) in roleroute"-->
+<!--              :key="i"-->
+<!--              :label="field"-->
+<!--              horizontal-->
+<!--            />-->
+
+
+            <b-field label="Description" horizontal>
+              <b-input v-model="role.description" required />
             </b-field>
+          <hr />
+
+            <div class="columns">
+              <div class="column" >
+                <div style="margin: .5rem; text-align: start">
+                <b-field label="REPORT ACCESS" horizontal >
+                </b-field>
+                </div>
+              </div>
+
+                <div class="column" >
+                  <div v-for="(route, i) in roleArray['actions']" :key="i" >
+                    <b-field v-if="route['controller_action'] === 'index'" :label="route['controller_action']" horizontal>
+<!--                       <b-checkbox v-model="role.role_access" :value="route['controller']" />-->
+                      <input  v-model="role.role_access"  type="checkbox" :value="route['controller']" />
+
+                    </b-field>
+                  </div>
+                  <div v-for="(route, i) in roleArray['actions']" :key="i" >
+                    <b-field v-if="route['controller_action'] === 'store'" :label="route['controller_action']" horizontal>
+                      <!--                       <b-checkbox v-model="role.role_access" :value="route['controller']" />-->
+                      <input  v-model="role.role_access"  type="checkbox" :value="route['controller']" />
+                    </b-field>
+                  </div>
+                </div>
+                <div class="column">
+                  <div v-for="(route, i) in roleArray['actions']" :key="i" >
+                    <b-field v-if="route['controller_action'] === 'update'" :label="route['controller_action']" horizontal>
+                      <!-- <b-checkbox  @click="addField()" v-model="role.role_access" :value="role.role_access" />-->
+                      <input  v-model="role.role_access"  type="checkbox" :value="route['controller']"/>
+                    </b-field>
+                  </div>
+                  <div v-for="(route, i) in roleArray['actions']" :key="i" >
+                    <b-field v-if="route['controller_action'] === 'destroy'" :label="route['controller_action']" horizontal>
+                      <!-- <b-checkbox  @click="addField()" v-model="role.role_access" :value="role.role_access" />-->
+                      <input  v-model="role.role_access"  type="checkbox" :value="route['controller']"/>
+                    </b-field>
+                  </div>
+                </div>
+
+              <div class="column">
+                <div v-for="(route, i) in roleArray['actions']" :key="i">
+                  <b-field v-if="route['controller_action'] === 'exportpdf'" :label="route['controller_action']" horizontal>
+                    <!-- <b-checkbox  @click="addField()" v-model="role.role_access" :value="role.role_access" />-->
+                    <input  v-model="role.role_access"  type="checkbox" :value="route['controller']"/>
+                  </b-field>
+                </div>
+                <div v-for="(route, i) in roleArray['actions']" :key="i">
+                  <b-field v-if="route['controller_action'] === 'exportcsv'" :label="route['controller_action']" horizontal>
+                    <!-- <b-checkbox  @click="addField()" v-model="role.role_access" :value="role.role_access" />-->
+                    <input  v-model="role.role_access"  type="checkbox" :value="route['controller']"/>
+                  </b-field>
+                </div>
+              </div>
+
+            </div>
+
+<!--            <div v-for="(route, i) in roleArray['actions']" :key="route['controller']"  >-->
+<!--              <div class="column is-one-third">-->
+<!--                <b-field :label="route['controller_action']" horizontal>-->
+<!--                  &lt;!&ndash; <b-checkbox  @click="addField()" v-model="role.role_access" :value="role.role_access" />&ndash;&gt;-->
+<!--                  <input v-model="role.role_access[i]" type="checkbox" :value="route['controller']"/>-->
+<!--                </b-field>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            </div>-->
+
             <hr />
             <b-field horizontal>
               <b-button
@@ -72,7 +151,15 @@
       return {
         isLoading: false,
         role: this.getClearFormObject(),
-        createdReadable: null
+        roleAccessData: [],
+        createdReadable: null,
+        forms: [],
+        // role_access: [],
+        item: null,
+        // form: this.getClearFormObject(),
+        roleArray: [],
+        // checkbox: false,
+        checkUserAccess: [],
       };
     },
     computed: {
@@ -80,52 +167,74 @@
         let lastCrumb;
 
         if (this.isProfileExists) {
-          lastCrumb = this.role.title;
+          lastCrumb = this.role.name;
         } else {
-          lastCrumb = "New Form";
+          lastCrumb = "New Role";
         }
 
-        return ["Admin", "Reports", lastCrumb];
+        return ["Admin", "Role", lastCrumb];
       },
       heroTitle() {
         if (this.isProfileExists) {
-          return this.role.title;
+          return this.role.name;
         } else {
-          return "Create Form";
+          return "Create Role";
         }
       },
       formCardTitle() {
         if (this.isProfileExists) {
-          return "Edit Form";
+          return "Edit Role";
         } else {
-          return "New Form";
+          return "New Role";
         }
       },
       isProfileExists() {
-        return ;
+        return !! this.item;
       }
     },
     created() {
+      this.getRoleAccess();
       this.getData();
+      // this.getUserAccess();
     },
     methods: {
+      getRoleAccess(){
+        axios
+        .get('roleroute')
+          .then(r => {
+              this.roleArray = r.data.ReportsFormsController
+              // console.log(this.roleArray)
+          })
+          .catch(err => {
+            this.$buefy.toast.open({
+              message: `Error: ${err.message}`,
+              type: "is-danger",
+              queue: false
+            });
+          });
+      },
       getClearFormObject() {
         return {
           id: null,
-          title: null,
-          operation: null,
+          name: null,
+          description: null,
+          role_access: [],
         };
       },
+
       getData() {
         if (this.id) {
           axios
             .get(`/reports/role/${this.id}`)
             .then(r => {
               this.role = r.data.data;
+              this.roleAccessData = r.data.roleAccess;
+              this.item = clone(r.data.data);
 
               // this.form.created_date = new Date(r.data.data.created_mm_dd_yyyy);
             })
             .catch(e => {
+              this.item = null;
 
               this.$buefy.toast.open({
                 message: `Error: ${e.message}`,
@@ -162,7 +271,7 @@
 
             if (!this.id && r.data.data.id) {
               this.$router.push({
-                title: "reprots.role.edit",
+                title: "reports.role.edit",
                 params: { id: r.data.data.id }
               });
 
@@ -171,6 +280,7 @@
                 queue: false
               });
             } else {
+              this.item = r.data.data;
 
               this.$buefy.snackbar.open({
                 message: "Updated",
@@ -192,6 +302,7 @@
     watch: {
       id(newValue) {
         this.role = this.getClearFormObject();
+        this.item = null;
 
         if (newValue) {
           this.getData();

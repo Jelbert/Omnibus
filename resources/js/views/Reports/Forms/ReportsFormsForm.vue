@@ -28,22 +28,33 @@
               <b-input v-model="form.pentaho_id" required />
             </b-field>
             <b-field label="Category" horizontal>
-            <div class="block" >
-              <b-radio v-model="form.category"
-                       name="category"
-                       value="prod"
-                       @change="onChange($event)"
-                       native-value="prod">
-                Prod
-              </b-radio>
-              <b-radio v-model="form.category"
-                       name="category"
-                       value="m3"
-                       @change="onChange($event)"
-                       native-value="m3">
-                M3 Prd
-              </b-radio>
-            </div>
+<!--            <div class="block" >-->
+<!--              <b-radio v-model="form.category"-->
+<!--                       name="category"-->
+<!--                       value="prod"-->
+<!--                       @change="onChange($event)"-->
+<!--                       native-value="prod">-->
+<!--                Prod-->
+<!--              </b-radio>-->
+<!--              <b-radio v-model="form.category"-->
+<!--                       name="category"-->
+<!--                       value="m3"-->
+<!--                       @change="onChange($event)"-->
+<!--                       native-value="m3">-->
+<!--                M3 Prd-->
+<!--              </b-radio>-->
+<!--            </div>-->
+
+              <b-select v-model="form.category_id" placeholder="Select a Category"  rounded>
+                <option
+                  v-for="option in categories"
+                  :value="option.id"
+                  :key="option.id">
+                  {{option.name}}
+                </option>
+              </b-select>
+
+
             </b-field>
             <b-field label="Fields" horizontal>
               <div>
@@ -189,15 +200,17 @@ export default {
   },
   props: {
     id: {
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       isLoading: false,
       item: null,
       form: this.getClearFormObject(),
-      createdReadable: null
+      createdReadable: null,
+      categories: [],
+      selected: '',
     };
   },
   computed: {
@@ -232,6 +245,7 @@ export default {
   },
   created() {
     this.getData();
+    this.getCategory();
   },
   methods: {
     addField() {
@@ -246,7 +260,8 @@ export default {
       return {
         id: null,
         title: null,
-        category: null,
+        category_id: null,
+        path: '',
         pentaho_id: null,
         fields: []
       };
@@ -280,7 +295,6 @@ export default {
       console.log(data);
     },
     submit() {
-      this.isLoading = true;
       let method = "post";
       let url = "/reports/forms/store";
 
@@ -289,6 +303,8 @@ export default {
         url = `/reports/forms/${this.id}`;
       }
 
+
+      this.isLoading = true;
       axios({
         method,
         url,
@@ -325,7 +341,27 @@ export default {
             queue: false
           });
         });
-    }
+    },
+    getCategory() {
+      this.isLoading = true;
+      axios
+        .get("/category")
+        .then(r => {
+          this.isLoading = false;
+          if (r.data && r.data.data) {
+            this.categories = r.data.data;
+          }
+        })
+        .catch(err => {
+          this.isLoading = false;
+          this.$buefy.toast.open({
+            message: `Error: ${err.message}`,
+            type: "is-danger",
+            queue: false
+          });
+        });
+    },
+
   },
   watch: {
     id(newValue) {

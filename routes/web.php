@@ -46,7 +46,29 @@ Route::prefix('/reports/forms')->group(function () {
     Route::post('{form}/generate', 'Reports\ReportsFormsController@generate');
     Route::get('{form}/exportpdf', 'Reports\ReportsFormsController@exportpdf');
     Route::get('{form}/exportcsv', 'Reports\ReportsFormsController@exportcsv');
+
 });
+
+/*
+ * Category
+ * */
+Route::get('category', 'Reports\ReportsFormsController@category');
+Route::prefix('/reports/category')->group(function () {
+    Route::get('', 'Reports\CategoryController@index');
+    Route::post('store', 'Reports\CategoryController@store');
+    Route::get('{category}', 'Reports\CategoryController@show');
+    Route::patch('{category}', 'Reports\CategoryController@update');
+    Route::post('destroy', 'Reports\CategoryController@destroyMass');
+    Route::delete('{category}/destroy', 'Reports\CategoryController@destroy');
+});
+
+/*
+ * Modules
+ */
+
+Route::get('modules', 'Reports\ModuleController@modules');
+Route::post('modulepath', 'Reports\ModuleController@postModulePath');
+Route::get('{$module}', 'Reports\ModuleController@getModulePath');
 
 /*
  * Company
@@ -56,6 +78,7 @@ Route::prefix('/company')->group(function () {
     Route::get('{company}', 'CompanyController@show');
 });
 
+
 /*
  * Report Role
  */
@@ -64,7 +87,17 @@ Route::prefix('/reports/role')->group(function (){
     Route::post('store', 'Reports\ReportRoleController@store');
     Route::get('{role}', 'Reports\ReportRoleController@show');
     Route::patch('{role}', 'Reports\ReportRoleController@update');
+    Route::post('destroy', 'Reports\ReportRoleController@destroyMass');
+    Route::delete('{role}/destroy', 'Reports\ReportRoleController@destroy');
 });
+
+Route::get('access', 'Reports\ReportRoleController@getRoleAccesses');
+
+Route::get('roleroute', 'RoleRoute@transformed');
+
+
+
+
 
 
 /*

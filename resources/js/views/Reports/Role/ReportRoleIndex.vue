@@ -48,7 +48,7 @@
         >
           <template slot-scope="props">
             <b-table-column label="Title" field="title" sortable>{{
-              props.row.title
+              props.row.name
               }}</b-table-column>
             <b-table-column label="Created">
               <small

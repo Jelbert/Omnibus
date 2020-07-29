@@ -20,12 +20,18 @@ class Form extends Model
      */
     public $timestamps = true;
 
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['title', 'category' ,'pentaho_id', 'fields'];
+    protected $fillable = ['title', 'category_id' ,'pentaho_id', 'fields'];
 
     /**
      * The attributes that are appended.

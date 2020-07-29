@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Reports;
 use App\File;
 use App\Http\Controllers\Controller;
 use App\Models\Reports\Form as ReportsForm;
+use App\Models\Reports\Category as Category;
 use App\Http\Requests\Reports\ReportsFormStoreRequest;
+use App\Models\Reports\module;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -42,19 +44,19 @@ class ReportsFormsController extends Controller
     }
 
     public function m3(Request $request) {
-        $forms = ReportsForm::where('category', $request->query('category', 'm3'))->get();
-
-        return response()->json([
-            'data' => $forms
-        ]);
+//        $forms = ReportsForm::where('category', $request->query('category', 'm3'))->get();
+//
+//        return response()->json([
+//            'data' => $forms
+//        ]);
     }
 
     public function prod(Request $request) {
-        $forms = ReportsForm::where('category', $request->query('category', 'prod'))->get();
-
-        return response()->json([
-            'data' => $forms
-        ]);
+//        $forms = ReportsForm::where('category', $request->query('category', 'prod'))->get();
+//
+//        return response()->json([
+//            'data' => $forms
+//        ]);
     }
 
     /**
@@ -144,11 +146,13 @@ class ReportsFormsController extends Controller
         $form->fill($request->all());
         $form->save();
 
+
+
         return response()->json([
             'status' => true,
             'created' => true,
             'data' => [
-                'id' => $form->id
+                'id' => $form->id,
             ]
         ]);
     }
@@ -253,5 +257,18 @@ class ReportsFormsController extends Controller
             ->header('Content-Type', 'text/csv');
 
     }
+
+
+    public function category(){
+        $categories = Category::all();
+
+
+        return response()->json([
+            'data' => $categories
+        ]);
+    }
+
+
+
 
 }

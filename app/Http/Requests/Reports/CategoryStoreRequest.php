@@ -4,7 +4,7 @@ namespace App\Http\Requests\Reports;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReportsFormStoreRequest extends FormRequest
+class CategoryStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,7 @@ class ReportsFormStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
-            'category_id' => 'required',
-            'pentaho_id' => 'required',
-            'fields' => [
-                'array',
-                'min:1'
-            ]
+            'name' => 'required',
         ];
     }
 }

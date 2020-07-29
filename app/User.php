@@ -38,6 +38,11 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function role()
+    {
+        return $this->hasOne(Role::class, 'id', 'role_id');
+    }
+
     public function file() {
         return $this->belongsTo(File::class);
     }

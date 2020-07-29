@@ -7,6 +7,23 @@ Vue.use(Router);
 export default new Router({
   base: process.env.BASE_URL,
   routes: [
+    //Category
+    {
+      path: "/reports/category/index",
+      name: "reports.category.index",
+      component: () => import("./views/Reports/Category/CategoryIndex.vue")
+    },
+    {
+      path: "/reports/category/new",
+      name: "reports.category.new",
+      component: () => import("./views/Reports/Category/CategoryForm.vue")
+    },
+    {
+      path: "/reports/category/:id",
+      name: "reports.category.edit",
+      component: () => import("./views/Reports/Category/CategoryForm.vue"),
+      props: true
+    },
     //Roles
     {
       path: "/reports/role/index",

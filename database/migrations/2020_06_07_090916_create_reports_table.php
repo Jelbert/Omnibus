@@ -16,7 +16,8 @@ class CreateReportsTable extends Migration
         Schema::create('reports_forms', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('category');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');;
             $table->string('pentaho_id');
             $table->json('fields');
             $table->timestamps();

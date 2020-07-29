@@ -3,9 +3,9 @@
     <title-bar :title-stack="['Admin', 'Reports', 'Manage Forms']" />
     <hero-bar>
       Manage Forms
-      <router-link to="/reports/forms/new" class="button" slot="right"
-        >New Form</router-link
-      >
+
+      <router-link tag="button" :disabled="onCreate !== 'true'" to="/reports/forms/new" class="button" slot="right">New Form</router-link>
+
     </hero-bar>
     <section class="section is-main-section">
       <card-component
@@ -16,10 +16,11 @@
         <card-toolbar>
           <button
             slot="right"
+
             type="button"
             class="button is-danger is-small has-checked-rows-number"
             @click="trashModal(null)"
-            :disabled="!checkedRows.length"
+            :disabled="!checkedRows.length || onDelete !== 'true'"
           >
             <b-icon icon="trash-can" custom-size="default" />
             <span>Delete</span>
@@ -60,6 +61,8 @@
             <b-table-column custom-key="actions" class="is-actions-cell">
               <div class="buttons is-right">
                 <router-link
+                  tag="button"
+                  :disabled="onEdit !== 'true'"
                   :to="{
                     name: 'reports.forms.edit',
                     params: { id: props.row.id }
@@ -71,6 +74,7 @@
                 <button
                   class="button is-small is-danger"
                   type="button"
+                  :disabled="onDelete !== 'true'"
                   @click.prevent="trashModal(props.row)"
                 >
                   <b-icon icon="delete" size="is-small" />
@@ -127,7 +131,13 @@ export default {
       isLoading: false,
       paginated: false,
       perPage: 10,
-      checkedRows: []
+      checkedRows: [],
+      checkUserID: [],
+      checkUserAccess: [],
+      onIndex: false,
+      onCreate: false,
+      onEdit: false,
+      onDelete: false,
     };
   },
   computed: {
@@ -141,12 +151,63 @@ export default {
       }
 
       return null;
-    }
+    },
   },
   created() {
     this.getData();
+    this.getUserAccess();
+    this.getUser();
   },
   methods: {
+    getUserAccess(){
+      axios
+        .get("/access")
+        .then(r => {
+          if (r.data && r.data.data) {
+            this.checkUserAccess = r.data.data
+            let i;
+            // let route;
+            for (i = 0; i < this.checkUserAccess.length; i++) {
+              if (this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@index') {
+                this.onIndex = 'true';
+                console.log('INDEX');
+              } else if (this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@store'){
+                this.onCreate = 'true';
+                console.log('STORE');
+              } else if (this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@update') {
+                this.onEdit = 'true';
+                console.log('UPDATE');
+              } else if (this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@destroy'){
+                this.onDelete = 'true';
+                console.log('DESTROY');
+              }
+            }
+
+          }
+        })
+        .catch(err => {
+          this.$buefy.toast.open({
+            message: `Error: ${err.message}`,
+            type: "is-danger"
+          });
+        });
+    },
+    getUser(){
+      axios
+        .get("/user")
+        .then(r => {
+          if (r.data && r.data.data) {
+            this.checkUserID = r.data.data;
+            // console.log(this.checkUserID['role_id']);
+          }
+        })
+        .catch(err => {
+          this.$buefy.toast.open({
+            message: `Error: ${err.message}`,
+            type: "is-danger"
+          });
+        });
+    },
     getData() {
       this.isLoading = true;
       axios

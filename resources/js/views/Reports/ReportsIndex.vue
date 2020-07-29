@@ -6,79 +6,78 @@
     <section class="section is-main-section">
 
 
+<!--      <b-collapse  class="card" animation="slide" :open.sync="isReportOpen">-->
+<!--        <div slot="trigger" slot-scope="props" class="card-header" role="button">-->
+<!--          <p class="card-header-title">Reports</p>-->
+<!--          <a class="card-header-icon">-->
+<!--            <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"></b-icon>-->
+<!--          </a>-->
+<!--        </div>-->
+<!--        <div class="card-content" >-->
+<!--          <div class="content" >-->
+<!--            <b-loading  :is-full-page="isFullPage" :active.sync="isReportLoading" ></b-loading>-->
 
-      <b-collapse  class="card" animation="slide" :open.sync="isReportOpen">
-        <div slot="trigger" slot-scope="props" class="card-header" role="button">
-          <p class="card-header-title">Reports</p>
-          <a class="card-header-icon">
-            <b-icon :icon="props.open ? 'menu-down' : 'menu-up'"></b-icon>
-          </a>
-        </div>
-        <div class="card-content" >
-          <div class="content" >
-            <b-loading  :is-full-page="isFullPage" :active.sync="isReportLoading" ></b-loading>
+<!--        <div class="company" >-->
+<!--          <b-field label="Company">-->
+<!--            <b-select :loading="isCodeLoading" v-model="selected" placeholder="Select a company"  rounded>-->
+<!--              <option-->
+<!--                v-for="option in company"-->
+<!--                :value="option.id"-->
+<!--                :key="option.id"-->
+<!--                :data-url="option.code"-->
+<!--                v-bind:value="{ code: option.code }">-->
+<!--                {{option.name + ' - ' + option.code}}-->
+<!--              </option>-->
+<!--            </b-select>-->
+<!--          </b-field>-->
+<!--        </div>-->
 
-        <div class="company" >
-          <b-field label="Company">
-            <b-select :loading="isCodeLoading" v-model="selected" placeholder="Select a company"  rounded>
-              <option
-                v-for="option in company"
-                :value="option.id"
-                :key="option.id"
-                :data-url="option.code"
-                v-bind:value="{ code: option.code }">
-                {{option.name + ' - ' + option.code}}
-              </option>
-            </b-select>
-          </b-field>
-        </div>
+<!--            <b-menu class="" >-->
+<!--              <b-menu-list >-->
+<!--                <b-menu-item icon="settings" :active="isActive" expanded >-->
+<!--                  <template slot="label" slot-scope="props">-->
+<!--                    M3 Prd-->
+<!--                    <b-icon class="is-pulled-right" :icon="props.expanded ? 'menu-down' : 'menu-up'"></b-icon>-->
+<!--                  </template>-->
+<!--                  <li v-for="label in m3" >-->
+<!--                    <div>-->
+<!--                      <a class="router-link-active has-icon">-->
+<!--                        <span  @click="getReport(label)"  class="menu-item-label ">{{label.title}}</span>-->
+<!--                      </a>-->
+<!--                    </div>-->
+<!--                  </li>-->
+<!--                </b-menu-item>-->
 
-            <b-menu class="" >
-              <b-menu-list >
-                <b-menu-item icon="settings" :active="isActive" expanded >
-                  <template slot="label" slot-scope="props">
-                    M3 Prd
-                    <b-icon class="is-pulled-right" :icon="props.expanded ? 'menu-down' : 'menu-up'"></b-icon>
-                  </template>
-                  <li v-for="label in m3" >
-                    <div>
-                      <a class="router-link-active has-icon">
-                        <span  @click="getReport(label)"  class="menu-item-label ">{{label.title}}</span>
-                      </a>
-                    </div>
-                  </li>
-                </b-menu-item>
-
-                <b-menu-item class="prod" icon="settings">
-                  <template slot="label" slot-scope="props">
-                    Prod
-                    <b-icon class="is-pulled-right" :icon="props.expanded ? 'menu-down' : 'menu-up'"></b-icon>
-                  </template>
-                  <li v-for="label in prod">
-                    <div>
-                      <a class="router-link-active has-icon">
-                        <span @click="getReport(label)" class="menu-item-label ">{{label.title}}</span>
-                      </a>
-                    </div>
-                  </li>
-                </b-menu-item>
-              </b-menu-list>
-            </b-menu>
-          </div>
-        </div>
-      </b-collapse>
+<!--                <b-menu-item class="prod" icon="settings">-->
+<!--                  <template slot="label" slot-scope="props">-->
+<!--                    Prod-->
+<!--                    <b-icon class="is-pulled-right" :icon="props.expanded ? 'menu-down' : 'menu-up'"></b-icon>-->
+<!--                  </template>-->
+<!--                  <li v-for="label in prod">-->
+<!--                    <div>-->
+<!--                      <a class="router-link-active has-icon">-->
+<!--                        <span @click="fetchMessages(label)" class="menu-item-label ">{{label.title}}</span>-->
+<!--                      </a>-->
+<!--                    </div>-->
+<!--                  </li>-->
+<!--                </b-menu-item>-->
+<!--              </b-menu-list>-->
+<!--            </b-menu>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </b-collapse>-->
 
 <!--      <h1>{{selected.code}}</h1>-->
 
-<!--      <b-field label="Select Report">-->
-<!--        <b-autocomplete id="title2"-->
-<!--          :keep-first="false"-->
-<!--          :open-on-focus="false"-->
-<!--          :data="forms"-->
-<!--          field="title"-->
-<!--          @select="option => selectedForm = option"-->
-<!--        ></b-autocomplete>-->
-<!--      </b-field>-->
+      <b-field label="Select Report">
+        <b-autocomplete
+          :keep-first="true"
+          :open-on-focus="true"
+          :data="forms"
+          field="title"
+          @select="option => selectedForm = option"
+        ></b-autocomplete>
+      </b-field>
 
       <b-collapse  class="card" animation="slide" :open.sync="isOpen" v-if="selectedForm != null" >
         <div slot="trigger" slot-scope="props" class="card-header" role="button">
@@ -92,12 +91,12 @@
           <div class="content">
 
             <form @submit.prevent="submit">
-              <b-field
-                v-for="(field, i) in selectedForm.fields"
-                :key="i"
-                :label="field.label"
-                horizontal
-              >
+                <b-field
+                  v-for="(field, i) in selectedForm.fields"
+                  :key="i"
+                  :label="field.label"
+                  horizontal
+                >
 
                 <b-input v-model="formData[field.alias]" v-if="field.type == 'text'"  required />
                 <b-select
@@ -136,8 +135,8 @@
             <b-icon :icon="active ? 'menu-up' : 'menu-down'"></b-icon>
           </b-button>
 
-          <b-dropdown-item aria-role="listitem" @click="pdf">PDF</b-dropdown-item>
-          <b-dropdown-item aria-role="listitem" @click="csv">EXCEL</b-dropdown-item>
+          <b-dropdown-item tag="button" aria-role="listitem" @click="pdf" :disabled="onPDF !== 'true'">PDF</b-dropdown-item>
+          <b-dropdown-item tag="button" aria-role="listitem" @click="csv" :disabled="onCSV !== 'true'">EXCEL</b-dropdown-item>
         </b-dropdown>
       </div>
       <div ref="content" id="report" class="report" v-if="report != null" v-html="report" ></div>
@@ -155,6 +154,7 @@ import CardToolbar from "@/components/CardToolbar";
 import ModalTrashBox from "@/components/ModalTrashBox";
 import Tiles from "@/components/Tiles";
 import moment from 'moment';
+import clone from "lodash/clone";
 
 export default {
   name: "ReportsFormsIndex",
@@ -193,6 +193,9 @@ export default {
       isReportLoading: false,
       isCodeLoading: false,
       isFullPage: false,
+      onPDF: false,
+      onCSV: false,
+      checkUserAccess: [],
     };
   },
   watch: {
@@ -201,6 +204,11 @@ export default {
       this.report = null;
       this.isOpen = true;
       this.exportbutton = null;
+    },
+    $route(to, from) {
+      // react to route changes...
+      if(to !== from){ location.reload();
+      }
     }
   },
   computed: {},
@@ -209,6 +217,11 @@ export default {
     this.getM3();
     this.getProd();
     this.getForms();
+  },
+  props: {
+    id: {
+      default: null
+    },
   },
   methods: {
     pdf() {
@@ -329,6 +342,9 @@ export default {
           this.isLoading = false;
           if (r.data && r.data.data) {
             this.forms = r.data.data;
+            // console.log(Object.keys(Object.assign({}, this.forms)))
+            // console.log(this.forms);
+            this.fetchMessages(this.forms);
           }
         })
         .catch(err => {
@@ -386,6 +402,7 @@ export default {
           this.isReportLoading = false;
           if (r.data && r.data.data) {
             this.prod = r.data.data;
+
           }
         })
         .catch(err => {
@@ -397,15 +414,38 @@ export default {
           });
         });
     },
-    getReport(label){
-
-      setTimeout(() =>this.isReportOpen = false, 400);
-      this.selectedForm = label
-      setTimeout(() => this.formData["p_head_cono"] = this.selected.code, 200);
-
-      // console.log(setTimeout(() => this.formData["p_head_cono"] = this.selected.code, 500))
-
+    fetchMessages(form){
+      this.selectedForm = form[this.$route.query.form]
     },
+    getUserAccess(){
+      axios
+        .get("/access")
+        .then(r => {
+          if (r.data && r.data.data) {
+            this.checkUserAccess = r.data.data
+            let i;
+            // let route;
+            for (i = 0; i < this.checkUserAccess.length; i++) {
+              if (this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@exportpdf') {
+                this.onPDF = 'true';
+                console.log('PDF');
+              } else if (this.checkUserAccess[i] === 'App\\Http\\Controllers\\Reports\\ReportsFormsController@exportcsv') {
+                this.onCSV = 'true';
+                console.log('CSV');
+              }
+            }
+
+          }
+        })
+        .catch(err => {
+          this.$buefy.toast.open({
+            message: `Error: ${err.message}`,
+            type: "is-danger"
+          });
+        });
+    },
+
+
   }
 };
 </script>

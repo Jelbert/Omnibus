@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Reports;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Reports\ReportRoleStoreRequest;
-use App\Models\Reports\ReportRole as ReportRole;
+use App\Models\Reports\Form as ReportsForm;
+use App\Role as Role;
+use App\RoleAccess as RoleAccess;
+use App\Http\Controllers\RoleRoute;
+use Facade\FlareClient\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportRoleController extends Controller
 {
@@ -25,7 +30,8 @@ class ReportRoleController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function index() {
-        $roles = ReportRole::all();
+        $roles = Role::all();
+
 
         return response()->json([
             'data' => $roles
@@ -40,10 +46,34 @@ class ReportRoleController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store( ReportRoleStoreRequest $request ) {
-        $role = new ReportRole;
-        $role->fill($request->all());
-        $role->save();
+    public function store(  ) {
+        $this->validate(request(), [
+            'name' => 'required',
+            'role_access.*' => 'in:'.RoleRoute::getActionName()->implode(',')
+        ]);
+
+
+//        $forms = ReportsForm::all();
+
+
+        $role = Role::forceCreate([
+            'name' => request('name'),
+            'description' => request('description')
+        ]);
+//        $accesses = request('role_access');
+////        $accesses = request('role_access');
+//        dd($accesses);
+
+        if ($accesses = request('role_access')) {
+            foreach ($accesses as $route) {
+                RoleAccess::forceCreate([
+                    'role_id' => $role->id,
+                    'route' => $route
+                ]);
+            }
+        }
+
+//
 
         return response()->json([
             'status' => true,
@@ -54,18 +84,46 @@ class ReportRoleController extends Controller
         ]);
     }
 
+
+    public function getRoleAccesses(Request $request){
+
+        $modules = Auth::user()->role->accesses;
+        $modules = json_decode($modules, true);
+        $route = array();
+        $arrayChunk = array();
+
+
+        foreach ($modules as $key => $module) {
+            $route[] = $module;
+            $item = $route[$key]['route'];
+            $arrayChunk[] = $item;
+        }
+
+//        print_r($arrayChunk);
+//        exit;
+
+
+        return response()->json([
+            'data' => $arrayChunk
+        ]);
+
+    }
+
     /**
      * Generate report
      *
-     * @param ReportRole $role
+     * @param Role $role
      *
      * @return \Illuminate\Http\JsonResponse
      */
 
-    public function show( ReportRole $role ) {
+    public function show(Role $role ) {
+
+        $rolesaccess = RoleAccess::where('role_id', '=', $role->id)->get();
 
         return response()->json([
-            'data' => $role
+            'data' => $role,
+            'roleAccess' => $rolesaccess,
         ]);
     }
 
@@ -73,17 +131,56 @@ class ReportRoleController extends Controller
      * Update single resource
      *
      * @param ReportRoleStoreRequest $request
-     * @param ReportRole $client
+     * @param Role $client
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update( ReportRoleStoreRequest $request, ReportRole $role ) {
-        $role->fill($request->all());
+    public function update(Role $role ) {
+        $this->validate(request(), [
+            'name' => 'required',
+            'role_access.*' => 'in:'.RoleRoute::getActionName()->implode(',')
+        ]);
+
+        $role->name = request('name');
+        $role->description = request('description');
         $role->save();
+
+        $role->accesses()->delete();
+        if ($accesses = request('role_access')) {
+            $routes = [];
+
+            foreach ($accesses as $route) {
+                $routes[] = new RoleAccess(['route' => $route]);
+            }
+
+            $role->accesses()->saveMany($routes);
+        }
 
         return response()->json([
             'status' => true,
             'data' => $role
+        ]);
+    }
+
+    public function destroy( Role $role ) {
+        $role->delete();
+        $role->accesses()->delete();
+
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
+    public function destroyMass( Request $request, Role $role ) {
+        $request->validate([
+            'ids' => 'required|array'
+        ]);
+
+        RoleAccess::destroy($request->ids);
+        $role->accesses()->delete();
+
+        return response()->json([
+            'status' => true
         ]);
     }
 }

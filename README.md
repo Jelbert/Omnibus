@@ -22,7 +22,7 @@
 ## Development
 
 1. Run `php artisan serve`
-2. Run `npm watch` when developing the views
+2. Run `npm run watch` when developing the views
 
 ## References
 
